@@ -6,6 +6,7 @@
 #define fail {display(HP,level,remedy,maidenkiss,phoenixdown,0);   exit(0);}
 #define to_lower(x) {x|=32;}
 #define _debug {for (int i=0;i<n2;i++)  cout<<"mush["<<i<<"]="<<mush[i]<<" ";      cout<<endl;}
+#define ll long long
 
 void display(int HP, int level, int remedy, int maidenkiss, int phoenixdown, int rescue) {
     cout << "HP=" << HP
