@@ -21,9 +21,27 @@ string BaseKnight::toString() const {
     return s;
 }
 
+
 /* * * END implementation of class BaseKnight * * */
 
 /* * * BEGIN implementation of class ArmyKnights * * */
+
+int ArmyKnights:: count() const{
+    return n;
+}
+
+ArmyKnights:: ArmyKnights(const string & file_armyknights){
+    ifstream ifa(file_armyknights);
+    ifa>>n;
+    ArmyKnights.knight= new BaseKnight*[n];
+    for (int i=0;i<n;i++)
+    {
+        int id,maxhp,level,gil,antidote,phoenixdownI;
+        cin>>id>>maxhp>>level>>gil>>antidote>>phoenixdownI; 
+        ArmyKnights.knight[i]=BaseKnight.create(id,maxhp,level,gil,antidote,phoenixdownI);
+    }
+}
+
 void ArmyKnights::printInfo() const {
     cout << "No. knights: " << this->count();
     if (this->count() > 0) {
@@ -42,12 +60,22 @@ void ArmyKnights::printResult(bool win) const {
     cout << (win ? "WIN" : "LOSE") << endl;
 }
 
+
+
 /* * * END implementation of class ArmyKnights * * */
 
 /* * * BEGIN implementation of class KnightAdventure * * */
 KnightAdventure::KnightAdventure() {
     armyKnights = nullptr;
     events = nullptr;
+}
+
+void KnightAdventure ::loadArmyKnights(const string &file_armyknights){
+    armyKnights(file_armyknights);
+}
+
+void KnightAdventure ::loadEvents(const string &file_events){
+    
 }
 
 /* * * END implementation of class KnightAdventure * * */

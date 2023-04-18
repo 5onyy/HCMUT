@@ -26,22 +26,45 @@ protected:
     int gil;
     int antidote;
     BaseBag * bag;
-    KnightType knightType;
+    bool prime (int hp){
+        if (hp<2)   
+            return 0;
+        for (int i=2;i*i<=hp;i++)
+            if (hp%i==0)
+                return 0;
+        return 1;
+    }
+    KnightType knight_Type(){
+        if (prime(hp))
+            return PALADIN;
+        if (hp==888)
+            return LANCELOT;
+        int a=hp%10, b=(hp%100)/10, c=hp/100;
+        if ((hp<=999 && hp >=100)  &&  (a*a=b*b+c*c || b*b=a*a+c*c || c*c=a*a+b*b))
+            return DRAGON;
+        return NORMAL;       
+    };
 
 public:
-    static BaseKnight * create(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI);
+    static BaseKnight * create(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI){
+        int *a=new int [6];
+        a[0]=id, a[1]=maxhp, a[2]=level, a[3]=gil, a[4]=antidote, a[5]=phoenixdownI;
+        return a;
+    }
     string toString() const;
 };
 
 class ArmyKnights {
 public:
+    int n;
+
     ArmyKnights (const string & file_armyknights);
     ~ArmyKnights();
     bool fight(BaseOpponent * opponent);
     bool adventure (Events * events);
     int count() const;
     BaseKnight * lastKnight() const;
-
+    BaseKnight **knight;
     bool hasPaladinShield() const;
     bool hasLancelotSpear() const;
     bool hasGuinevereHair() const;
@@ -59,8 +82,14 @@ public:
 
 class Events {
 public:
+    int n_ev;
     int count() const;
     int get(int i) const;
+    int *ev=new int[count()];
+    Events (const string & file_events){
+        ifstream ife(file_events);
+        
+    }
 };
 
 class KnightAdventure {
@@ -72,8 +101,8 @@ public:
     KnightAdventure();
     ~KnightAdventure(); // TODO:
 
-    void loadArmyKnights(const string &);
-    void loadEvents(const string &);
+    void loadArmyKnights(const string &file_armyknights);
+    void loadEvents(const string &file_events);
     void run();
 };
 
