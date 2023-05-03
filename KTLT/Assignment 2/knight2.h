@@ -5,27 +5,55 @@
 
 // #define DEBUG
 
-enum ItemType {/* TODO: */};
+//enum ItemType {/* TODO: */};
 
-class BaseBag {
+/* class BaseBag {
 public:
     virtual bool insertFirst(BaseItem * item);
     virtual BaseItem * get(ItemType itemType);
     virtual string toString() const;
+}; */
+
+class Events {
+public:
+    int n_ev;
+    int *ev=NULL;
+    Events (const string & file_events);
+    ~Events();
+    int count() const;
+    int get(int i) const;
 };
 
-class BaseOpponent;
+class BaseOpponent{
+    public:
+    int i;
+    int id;
+    int gil;
+    int levelO(){
+        return ((i+id)%10+1);
+    };
+    int g[6]={0,100,150,450,750,800};
+    int base[6]={0,10,15,45,75,95};
+    int base_damage(){
+        return base[id];
+    } 
+    BaseOpponent(int pos, int _id);
+};
+
+
 
 enum KnightType { PALADIN = 0, LANCELOT, DRAGON, NORMAL };
+
 class BaseKnight {
-protected:
+public:
     int id;
-    int hp;
     int maxhp;
+    int hp=maxhp;
     int level;
     int gil;
     int antidote;
-    BaseBag * bag;
+    int phoenixdownI;
+    //BaseBag * bag;
     bool prime (int hp){
         if (hp<2)   
             return 0;
@@ -39,16 +67,16 @@ protected:
             return PALADIN;
         if (hp==888)
             return LANCELOT;
-        int a=hp%10, b=(hp%100)/10, c=hp/100;
-        if ((hp<=999 && hp >=100)  &&  (a*a=b*b+c*c || b*b=a*a+c*c || c*c=a*a+b*b))
+        int a=hp%10;
+        int b=(hp%100)/10;
+        int c=hp/100;
+        if ((hp<=999 && hp >=100)  &&  (a*a==b*b+c*c || b*b==a*a+c*c || c*c==a*a+b*b))
             return DRAGON;
         return NORMAL;       
     };
-
-public:
-    static BaseKnight * create(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI){
-        int *a=new int [6];
-        a[0]=id, a[1]=maxhp, a[2]=level, a[3]=gil, a[4]=antidote, a[5]=phoenixdownI;
+    static BaseKnight * create(int _id, int _maxhp, int _level, int _gil, int _antidote, int _phoenixdownI){
+        BaseKnight *a=new BaseKnight [6];
+        a->id=_id; a->maxhp=_maxhp; a->level=_level; a->gil=_gil; a->antidote=_antidote; a->phoenixdownI=_phoenixdownI;
         return a;
     }
     string toString() const;
@@ -57,40 +85,32 @@ public:
 class ArmyKnights {
 public:
     int n;
-
+    int cur;
+    BaseKnight **knight=NULL;
     ArmyKnights (const string & file_armyknights);
-    ~ArmyKnights();
+    ~ArmyKnights(){
+        delete knight;
+    };
     bool fight(BaseOpponent * opponent);
     bool adventure (Events * events);
     int count() const;
     BaseKnight * lastKnight() const;
-    BaseKnight **knight;
-    bool hasPaladinShield() const;
+    /* bool hasPaladinShield() const;
     bool hasLancelotSpear() const;
     bool hasGuinevereHair() const;
-    bool hasExcaliburSword() const;
+    bool hasExcaliburSword() const; */
 
     void printInfo() const;
     void printResult(bool win) const;
 };
 
-class BaseItem {
+/* class BaseItem {
 public:
     virtual bool canUse ( BaseKnight * knight ) = 0;
     virtual void use ( BaseKnight * knight ) = 0;
-};
+}; */
 
-class Events {
-public:
-    int n_ev;
-    int count() const;
-    int get(int i) const;
-    int *ev=new int[count()];
-    Events (const string & file_events){
-        ifstream ife(file_events);
-        
-    }
-};
+
 
 class KnightAdventure {
 private:

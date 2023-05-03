@@ -14,14 +14,14 @@ int main(int argc, char ** argv) {
         cout << "Error number of arguments" << endl;
         exit(1);
     }
-    
-    // BEBGIN
-    KnightAdventure * knightAdventure = new KnightAdventure();
-    knightAdventure->loadArmyKnights(file_armyknights);
-    knightAdventure->loadEvents(file_events);
-    knightAdventure->run();
 
-    delete knightAdventure;
+    // BEBGIN
+    KnightAdventure * knightadventure = new KnightAdventure();
+    knightadventure->loadArmyKnights(file_armyknights);
+    knightadventure->loadEvents(file_events);
+    knightadventure->run();
+
+    delete knightadventure;
 
     return 0;
 }
