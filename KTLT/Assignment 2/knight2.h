@@ -28,7 +28,6 @@ class BaseOpponent{
     public:
     int i;
     int id;
-    int gil;
     int levelO(){
         return ((i+id)%10+1);
     };
@@ -37,10 +36,37 @@ class BaseOpponent{
     int base_damage(){
         return base[id];
     } 
-    BaseOpponent(int pos, int _id);
+    int gil(){
+        return g[id];
+    }
+    BaseOpponent(int pos, int _id){
+        i=pos;
+        id=_id;
+    }
 };
 
+class normalType : public BaseOpponent{
+    public:
+/*         normalType(int pos, int _id){
+            i=pos;
+            id=_id;
+        } */
+        using BaseOpponent :: BaseOpponent;
+};
 
+class Tornbery : public BaseOpponent{
+    public:
+/*         Tornbery(int pos, int _id){
+            i=pos;
+            id=_id;
+        } */
+        using BaseOpponent :: BaseOpponent;
+};
+
+class Queen : public BaseOpponent{
+    public:
+        using BaseOpponent :: BaseOpponent;
+};
 
 enum KnightType { PALADIN = 0, LANCELOT, DRAGON, NORMAL };
 
@@ -48,11 +74,12 @@ class BaseKnight {
 public:
     int id;
     int maxhp;
-    int hp=maxhp;
+    int hp;
     int level;
     int gil;
     int antidote;
     int phoenixdownI;
+    bool poison=0;
     //BaseBag * bag;
     bool prime (int hp){
         if (hp<2)   
@@ -74,12 +101,13 @@ public:
             return DRAGON;
         return NORMAL;       
     };
-    static BaseKnight * create(int _id, int _maxhp, int _level, int _gil, int _antidote, int _phoenixdownI){
+    double knightBaseDamage[3]={0.06,0.05,0.075};
+    static BaseKnight * create(int _id, int _maxhp, int _level, int _phoenixdownI, int _gil, int _antidote){
         BaseKnight *a=new BaseKnight [6];
-        a->id=_id; a->maxhp=_maxhp; a->level=_level; a->gil=_gil; a->antidote=_antidote; a->phoenixdownI=_phoenixdownI;
+        a->id=_id; a->maxhp=_maxhp; a->level=_level; a->gil=_gil; a->antidote=_antidote; a->phoenixdownI=_phoenixdownI; a->hp=a->maxhp;
         return a;
     }
-    string toString() const;
+    string toString() ;
 };
 
 class ArmyKnights {
@@ -91,15 +119,18 @@ public:
     ~ArmyKnights(){
         delete knight;
     };
-    bool fight(BaseOpponent * opponent);
+    bool met_omega;
+    bool met_hades;
+    bool fight(BaseOpponent * target);
     bool adventure (Events * events);
     int count() const;
     BaseKnight * lastKnight() const;
-    /* bool hasPaladinShield() const;
-    bool hasLancelotSpear() const;
-    bool hasGuinevereHair() const;
-    bool hasExcaliburSword() const; */
-
+    bool can_revive(BaseKnight * lknight);
+    bool hasPaladinShield;
+    bool hasLancelotSpear;
+    bool hasGuinevereHair;
+    bool hasExcaliburSword;
+    bool win_Ultimecia;
     void printInfo() const;
     void printResult(bool win) const;
 };
