@@ -74,10 +74,10 @@ public:
     {
         T* tmp= head;
         int count =1;
-        while (head->next != NULL)
+        while (tmp->next != NULL)
         {
             count++;
-            head=head->next;
+            tmp=tmp->next;
         }
         return count;
     }

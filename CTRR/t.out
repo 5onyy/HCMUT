@@ -1,0 +1,9 @@
+Infix arimethic to postfix expression: 1 2 +
+Infix armiethic to postfix expression: + 1 2 
+Postfix arimethic evaluation: 3
+Prefix arimethic evaluation: 3
+Postfix logic expression: tx|s~->t~->rqt|xu~t||-><-><->
+Prefix logic expression: ->->|tx~s<->~t-><->r|qt|x|~ut
+Value: a b c d e f g h i j k l m n o p q r s t u v w x y z 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+Postfix Logic evaluation: TRUE
+Prefix Logic evaluation: TRUE

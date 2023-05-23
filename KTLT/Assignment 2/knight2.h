@@ -5,14 +5,15 @@
 
 // #define DEBUG
 
-//enum ItemType {/* TODO: */};
+enum ItemType {antidote=0,phoenixdownI,phoenixdownII,phoenixdownIII,phoenixdownIV};
+enum KnightType { PALADIN = 0, LANCELOT, DRAGON, NORMAL };
 
-/* class BaseBag {
-public:
-    virtual bool insertFirst(BaseItem * item);
-    virtual BaseItem * get(ItemType itemType);
-    virtual string toString() const;
-}; */
+class BaseKnight;
+class _BaseItem;
+class Events;
+class BaseOpponent;
+class node;
+class ArmyKnights;
 
 class Events {
 public:
@@ -47,19 +48,11 @@ class BaseOpponent{
 
 class normalType : public BaseOpponent{
     public:
-/*         normalType(int pos, int _id){
-            i=pos;
-            id=_id;
-        } */
         using BaseOpponent :: BaseOpponent;
 };
 
 class Tornbery : public BaseOpponent{
     public:
-/*         Tornbery(int pos, int _id){
-            i=pos;
-            id=_id;
-        } */
         using BaseOpponent :: BaseOpponent;
 };
 
@@ -68,9 +61,68 @@ class Queen : public BaseOpponent{
         using BaseOpponent :: BaseOpponent;
 };
 
-enum KnightType { PALADIN = 0, LANCELOT, DRAGON, NORMAL };
+class BaseItem {
+public:
+    virtual bool canUse ( BaseKnight * knight ,ItemType item_type) =0;
+    virtual void use ( BaseKnight * knight ) = 0;
+};
 
-class BaseKnight {
+class _BaseItem : public BaseItem
+{
+    public:
+    ItemType item_type;
+    int num;
+    _BaseItem(ItemType type){
+        item_type=type;
+    }
+    bool canUse ( BaseKnight * knight ,ItemType item_type){
+        return 0;
+    }
+    void use ( BaseKnight * knight ){
+        return;
+    };
+};
+    
+
+class node{
+    public:
+    node *next;
+    _BaseItem* item;
+    node() {};
+    node(_BaseItem *it) {
+        item=it;
+        next=NULL;
+    }
+};
+
+template<typename T> class BaseBag {
+public:
+    T* head=NULL;
+    int size();
+    BaseBag();
+    BaseBag(int anti, int phoenixI);
+    BaseBag(BaseKnight* kn, int anti, int phoenixI);
+    virtual bool insertFirst ( BaseItem * item ){
+        return 0;
+    }
+    virtual BaseItem * get(ItemType itemType){
+        return NULL;
+    }
+    virtual bool insertFirst(_BaseItem * item,int limit, T*& head);
+    void get(ItemType itemType,T*& head);
+    void lose_bag(T*& head);
+    virtual string toString();
+    ~BaseBag(){
+        T* tmp=head;
+        while (head!=NULL){
+            head=head->next;
+            delete tmp;
+            tmp=head;
+        }
+    }
+};
+
+class BaseKnight{
 public:
     int id;
     int maxhp;
@@ -80,7 +132,7 @@ public:
     int antidote;
     int phoenixdownI;
     bool poison=0;
-    //BaseBag * bag;
+    BaseBag<node> * bag;
     bool prime (int hp){
         if (hp<2)   
             return 0;
@@ -90,22 +142,26 @@ public:
         return 1;
     }
     KnightType knight_Type(){
-        if (prime(hp))
+        if (prime(maxhp))
             return PALADIN;
-        if (hp==888)
+        if (maxhp==888)
             return LANCELOT;
-        int a=hp%10;
-        int b=(hp%100)/10;
-        int c=hp/100;
-        if ((hp<=999 && hp >=100)  &&  (a*a==b*b+c*c || b*b==a*a+c*c || c*c==a*a+b*b))
+        int a=maxhp%10;
+        int b=(maxhp%100)/10;
+        int c=maxhp/100;
+        if ((maxhp<=999 && maxhp >=100)  &&  (a*a==b*b+c*c || b*b==a*a+c*c || c*c==a*a+b*b) && (a>0 && b>0 && c>0))
             return DRAGON;
         return NORMAL;       
     };
+    int bag_limit();
     double knightBaseDamage[3]={0.06,0.05,0.075};
     static BaseKnight * create(int _id, int _maxhp, int _level, int _phoenixdownI, int _gil, int _antidote){
         BaseKnight *a=new BaseKnight [6];
         a->id=_id; a->maxhp=_maxhp; a->level=_level; a->gil=_gil; a->antidote=_antidote; a->phoenixdownI=_phoenixdownI; a->hp=a->maxhp;
         return a;
+    }
+    ~BaseKnight(){
+        delete bag;
     }
     string toString() ;
 };
@@ -117,7 +173,10 @@ public:
     BaseKnight **knight=NULL;
     ArmyKnights (const string & file_armyknights);
     ~ArmyKnights(){
-        delete knight;
+        for (int i=0;i<n;i++)
+            if (knight[i])
+                delete [] knight[i];
+        delete [] knight;
     };
     bool met_omega;
     bool met_hades;
@@ -125,22 +184,29 @@ public:
     bool adventure (Events * events);
     int count() const;
     BaseKnight * lastKnight() const;
+    void collect_gil(BaseKnight * lnkight, int op_gil);
     bool can_revive(BaseKnight * lknight);
-    bool hasPaladinShield;
-    bool hasLancelotSpear;
-    bool hasGuinevereHair;
-    bool hasExcaliburSword;
+    bool hasPaladin;
+    bool hasLancelot;
+    bool hasGuinevere;
+    bool hasExcalibur;
     bool win_Ultimecia;
+    bool hasPaladinShield() const{
+        return hasPaladin;
+    };
+
+    bool hasLancelotSpear() const{
+        return hasLancelot;
+    };
+    bool hasGuinevereHair() const{
+        return hasGuinevere;
+    };
+    bool hasExcaliburSword() const{
+        return hasExcalibur;
+    };
     void printInfo() const;
     void printResult(bool win) const;
 };
-
-/* class BaseItem {
-public:
-    virtual bool canUse ( BaseKnight * knight ) = 0;
-    virtual void use ( BaseKnight * knight ) = 0;
-}; */
-
 
 
 class KnightAdventure {
